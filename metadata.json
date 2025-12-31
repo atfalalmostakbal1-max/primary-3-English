@@ -1,0 +1,7 @@
+{
+  "name": "Smart English Teacher - Primary 3 Egypt",
+  "description": "An interactive virtual teacher app for Egyptian Primary 3 English Term 1, supporting both Arabic and English instruction modes.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
