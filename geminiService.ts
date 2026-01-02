@@ -6,17 +6,24 @@ const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const TEACHER_SYSTEM_PROMPT = `
 أنتِ معلمة افتراضية ذكية متخصصة في تدريس اللغة الإنجليزية لأطفال الصف الثالث الابتدائي في مصر.
-المنهج: كتاب الوزارة للتيرم الأول.
+المنهج: كتاب الوزارة للتيرم الأول 2025/2026.
 العمر: 8-9 سنوات.
-الأسلوب: بسيط، مرح، تفاعلي، مشجع.
 
-القواعد:
-1. الالتزام بالمنهج المصري حرفياً.
-2. استخدام الرموز التعبيرية 🎵🍎🐱⭐.
-3. في طريقة (Arabic): اشرحي الكلمات الإنجليزية بالعربية وانطقي الإنجليزية بوضوح.
-4. في طريقة (English): تحدثي بالإنجليزية فقط بجمل قصيرة جداً وبسيطة.
-5. شجعي الطفل دائماً: "شاطر 👏"، "برافو!"، "أنت ممتاز!".
-6. انتظري إجابة الطفل (تخيليها في ردك).
+الأسلوب التربوي:
+- شرح المفاهيم بوضوح ومرح.
+- استخدام التعبيرات: "Look! 👀", "Listen and repeat! 👂", "Let's practice! ✍️".
+- عند وجود "Phonics": ركزي على مخارج الحروف كما في الكتاب (مثل wh, ph, x, ck).
+- عند وجود "Grammar": اشرحي القاعدة ببساطة (Verb to be, Past Simple, Present Continuous).
+
+التعامل مع التدريبات:
+1. في مرحلة "Activity": اطلبي من الطفل حل تدريب من نوع (Match, Fill in the blanks, Reorder, Circle the correct word).
+2. قدمي التدريب كأنه لعبة.
+3. انتظري إجابة تخيلية من الطفل، ثم قولي: "Excellent! You matched the picture with the word correctly! 🌟".
+4. شجعي الطفل على استخدام الميكروفون للنطق.
+
+القواعد اللغوية:
+- Arabic Mode: اشرحي بالعامية المصرية المحببة للأطفال مع نطق المصطلحات الإنجليزية بوضوح.
+- English Mode: استخدمي لغة إنجليزية بسيطة جداً (Basic English).
 `;
 
 export const getTeacherDialogue = async (
@@ -26,34 +33,39 @@ export const getTeacherDialogue = async (
   mode: TeachingMode
 ) => {
   const prompt = `
-  Instruction Mode: ${mode === TeachingMode.ARABIC ? "🟢 التعليم باللغة العربية" : "🔵 التعليم باللغة الإنجليزية"}
-  Unit: ${unit.id} - ${unit.title}
-  Lesson: ${lesson.id} - ${lesson.title}
-  Current Step: ${step}
+  Context:
+  Unit: Unit ${unit.id} - ${unit.title} (${unit.arabicTitle})
+  Lesson: Lesson ${lesson.id} - ${lesson.title}
+  Current Lesson Phase: ${step}
   
-  Content to cover:
-  Vocabulary: ${lesson.content.vocabulary.join(", ")}
-  Phonics: ${lesson.content.phonics || "N/A"}
-  Grammar: ${lesson.content.language}
-  
-  Please provide the teacher's script for this specific step. 
-  Keep it short, engaging, and suitable for the selected instruction mode.
+  Lesson Content:
+  - Vocabulary: ${lesson.content.vocabulary.join(", ")}
+  - Phonics: ${lesson.content.phonics || "No specific phonics for this lesson"}
+  - Grammar/Language: ${lesson.content.language}
+  - Key Skills: ${lesson.content.skills.join(", ")}
+
+  Teacher Task:
+  Act as the teacher for the "${step}" part of this specific lesson. 
+  If the phase is "VOCABULARY", introduce the words.
+  If the phase is "PHONICS", teach the sound.
+  If the phase is "ACTIVITY", give the child an interactive challenge based on the book exercises (like reordering words or matching).
+  Always end with an encouraging question or instruction.
   `;
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3-pro-preview",
       contents: prompt,
       config: {
         systemInstruction: TEACHER_SYSTEM_PROMPT,
-        temperature: 0.8,
+        temperature: 0.7,
       },
     });
 
-    return response.text || "I'm having a little trouble thinking. Let's try again! ✨";
+    return response.text || "Let's try that again, hero! ✨";
   } catch (error) {
     console.error("Gemini Error:", error);
-    return "Oops! Let's restart our lesson! 🌟";
+    return "Oops! Let's restart our fun lesson! 🌟";
   }
 };
 
@@ -89,7 +101,7 @@ export const connectToTeacherLive = (mode: TeachingMode, currentContext: string,
       speechConfig: {
         voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } },
       },
-      systemInstruction: TEACHER_SYSTEM_PROMPT + "\nسياق الدرس الحالي: " + currentContext,
+      systemInstruction: TEACHER_SYSTEM_PROMPT + "\nLesson Context: " + currentContext + "\nRespond based on the current unit and lesson goals.",
     },
     callbacks
   });

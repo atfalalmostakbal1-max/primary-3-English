@@ -251,18 +251,43 @@ const App: React.FC = () => {
   // Selection Views
   if (!mode) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-blue-100 via-white to-purple-100">
-        <div className="text-9xl mb-8 animate-bounce">🍎</div>
-        <h1 className="text-5xl font-black text-blue-800 mb-4 text-center tracking-tight">Smart Teacher</h1>
-        <p className="text-2xl text-blue-600 mb-12 text-center font-bold">أهلاً بك يا بطل! كيف تريد أن نتعلم اليوم؟ 🚀</p>
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-blue-100 via-white to-purple-100 overflow-hidden relative">
+        {/* Background Decorations */}
+        <div className="absolute top-10 left-10 text-6xl opacity-20 -rotate-12">📚</div>
+        <div className="absolute bottom-10 right-10 text-6xl opacity-20 rotate-12">✏️</div>
+        <div className="absolute top-1/2 left-[-2rem] text-6xl opacity-10 animate-pulse">🎨</div>
+
+        <div className="flex flex-col items-center mb-10">
+          <div className="relative">
+            <div className="text-9xl mb-4 animate-bounce">🍎</div>
+            <div className="absolute -top-4 -right-4 bg-yellow-400 text-blue-900 font-black px-4 py-2 rounded-2xl shadow-lg border-2 border-white rotate-12">
+              Grade 3
+            </div>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-black text-blue-800 mb-2 text-center tracking-tight drop-shadow-sm">Smart Teacher</h1>
+          <div className="flex flex-col items-center gap-1">
+            <span className="bg-indigo-600 text-white px-4 py-1 rounded-full text-sm font-black uppercase tracking-widest shadow-md">Primary 3 • Term 1</span>
+            <span className="text-indigo-500 font-bold text-lg mt-1">الصف الثالث الابتدائي - الترم الأول</span>
+          </div>
+        </div>
+
+        <p className="text-xl md:text-2xl text-blue-600 mb-10 text-center font-bold max-w-lg leading-relaxed px-4">
+          أهلاً بك يا بطل في منهج اللغة الإنجليزية الجديد! كيف تريد أن نتعلم اليوم؟ 🚀
+        </p>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-3xl">
-          <button onClick={() => setMode(TeachingMode.ARABIC)} className="group bg-white p-10 rounded-[3rem] shadow-2xl hover:scale-105 transition-all border-4 border-green-400 flex flex-col items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-3xl px-4">
+          <button onClick={() => setMode(TeachingMode.ARABIC)} className="group bg-white p-10 rounded-[3rem] shadow-2xl hover:scale-105 transition-all border-4 border-green-400 flex flex-col items-center relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-green-50 rounded-bl-3xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+               <span className="text-green-500 text-2xl">✨</span>
+            </div>
             <span className="text-7xl mb-6 group-hover:rotate-12 transition-transform">🟢</span>
             <span className="text-3xl font-black text-gray-800">باللغة العربية</span>
             <p className="text-gray-500 mt-4 text-center font-medium">نشرخ الإنجليزي بالعربي خطوة بخطوة</p>
           </button>
-          <button onClick={() => setMode(TeachingMode.ENGLISH)} className="group bg-white p-10 rounded-[3rem] shadow-2xl hover:scale-105 transition-all border-4 border-blue-400 flex flex-col items-center">
+          <button onClick={() => setMode(TeachingMode.ENGLISH)} className="group bg-white p-10 rounded-[3rem] shadow-2xl hover:scale-105 transition-all border-4 border-blue-400 flex flex-col items-center relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-16 h-16 bg-blue-50 rounded-bl-3xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+               <span className="text-blue-500 text-2xl">✨</span>
+            </div>
             <span className="text-7xl mb-6 group-hover:-rotate-12 transition-transform">🔵</span>
             <span className="text-3xl font-black text-gray-800">English Only</span>
             <p className="text-gray-500 mt-4 text-center font-medium">Listen, speak, and learn completely in English</p>
@@ -275,9 +300,12 @@ const App: React.FC = () => {
   if (!currentUnit) {
     return (
       <div className="min-h-screen p-8 max-w-5xl mx-auto">
-        <div className="flex justify-between items-center mb-12">
-          <h1 className="text-4xl font-black text-blue-900">الوحدات الدراسية 📚</h1>
-          <button onClick={() => setMode(null)} className="bg-white px-6 py-3 rounded-2xl text-blue-600 font-black shadow-md hover:bg-blue-50">تغيير الطريقة</button>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+          <div>
+            <span className="text-blue-400 font-black uppercase tracking-widest text-sm mb-1 block">Primary 3 • Term 1</span>
+            <h1 className="text-4xl font-black text-blue-900">الوحدات الدراسية 📚</h1>
+          </div>
+          <button onClick={() => setMode(null)} className="bg-white px-6 py-3 rounded-2xl text-blue-600 font-black shadow-md hover:bg-blue-50 border-2 border-blue-50">تغيير الطريقة</button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {curriculum.map((unit) => (
@@ -301,7 +329,7 @@ const App: React.FC = () => {
         <div className="flex items-center gap-6 mb-12">
           <button onClick={() => setCurrentUnit(null)} className="bg-white w-16 h-16 rounded-[1.5rem] text-blue-600 font-black text-3xl flex items-center justify-center shadow-md hover:shadow-lg transition-all">←</button>
           <div>
-            <span className="text-sm font-black text-blue-400 uppercase tracking-widest">Unit {currentUnit.id}</span>
+            <span className="text-sm font-black text-blue-400 uppercase tracking-widest">Unit {currentUnit.id} • Grade 3</span>
             <h1 className="text-4xl font-black text-blue-900">{currentUnit.title}</h1>
           </div>
         </div>
